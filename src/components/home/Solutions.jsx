@@ -187,7 +187,13 @@ function Tab({ title, index, activeIndex, tabImage, onClick }) {
                       ${activeIndex === index ? "opacity-100" : " opacity-50 "}
                     `}
     >
-      <Image src={tabImage} alt={title} className="max-h-16 pt-1 2xl:max-h-20" width={60} height={60} />
+      <Image
+        src={tabImage}
+        alt={title}
+        className="max-h-16 pt-1 2xl:max-h-20"
+        width={60}
+        height={60}
+      />
       <span className="sg-translate -mt-1 text-sm 2xl:text-base">{title}</span>
     </button>
   );
@@ -199,14 +205,22 @@ export default function Solutions() {
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef(null);
   const [progress, setProgress] = useState(0);
-  const [isLargeDevice, setisLargeDevice] = useState(
-    !(window.innerWidth < 1024)
-  );
+  const [isLargeDevice, setIsLargeDevice] = useState(false);
   const containerRef = useRef(null);
   const [activeSlide, setActiveSlide] = useState(0);
   const videoRefSlide2 = useRef(null);
   const [refresher, setRefresher] = useState(false);
+  useEffect(() => {
+    // This runs only on client, so no need for typeof window
+    const handleResize = () => {
+      setIsLargeDevice(window.innerWidth >= 1024);
+    };
 
+    handleResize(); // Set initial value
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   useEffect(() => {
     if (!isLargeDevice) return;
 
